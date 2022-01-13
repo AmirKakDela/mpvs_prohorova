@@ -21,7 +21,7 @@ char st[20];
 void setup() {
     pinMode(led_submit, OUTPUT);
     pinMode(led_cancel, OUTPUT);
-    // Подключение сервопривода на выходу 3
+    // Подключение сервопривода на выход 3
     microservo9g.attach(3);
     // Устанавливаем сервопривод в исходное положение
     microservo9g.write(90);
