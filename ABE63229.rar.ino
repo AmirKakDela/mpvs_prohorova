@@ -14,15 +14,15 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);
 int led_submit = 5;
 int led_cancel = 6;
 
-int row_excel = 0; // количество строк
+// Counter количества строк
+int row_excel = 0;
 
 char st[20];
 
 void setup() {
     pinMode(led_submit, OUTPUT);
     pinMode(led_cancel, OUTPUT);
-    pinMode(5, OUTPUT);
-    // Подключение сервопривода на выходу 3
+    // Подключение сервопривода на выход 3
     microservo9g.attach(3);
     // Устанавливаем сервопривод в исходное положение
     microservo9g.write(90);
@@ -32,13 +32,16 @@ void setup() {
     SPI.begin();
     // Инициализация MFRC522
     mfrc522.PCD_Init();
-    Serial.println("CLEARDATA");         // очистка листа excel
-    Serial.println("LABEL,Time,Code,Status");   // заголовки столбцов
+    // Очистка листа excel
+    Serial.println("CLEARDATA");
+    // Заголовки столбцов
+    Serial.println("LABEL,Time,Code,Status");
     Serial.println();
 }
 
 void loop() {
-    row_excel++; // номер строки + 1
+    // Номер строки excel + 1
+    row_excel++;
     // Ищем новые карты:
     if (!mfrc522.PICC_IsNewCardPresent()) {
         return;
@@ -47,9 +50,11 @@ void loop() {
     if (!mfrc522.PICC_ReadCardSerial()) {
         return;
     }
-    Serial.print("DATA,TIME,"); // запись в excel текущей даты и времени
+    // Запись в excel текущей даты и времени
+    Serial.print("DATA,TIME,");
     String content= "";
     byte letter;
+    // Запись в excel uid ключа
     for (byte i = 0; i < mfrc522.uid.size; i++) {
         Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
         Serial.print(mfrc522.uid.uidByte[i], HEX);
@@ -64,6 +69,7 @@ void loop() {
         microservo9g.write(-90);
         // Включаем светодиод
         digitalWrite(led_submit, HIGH);
+        // Вывод статуса в столбец Status
         Serial.print(true);
         Serial.println();
         delay(3000);
@@ -71,8 +77,9 @@ void loop() {
         microservo9g.write(90);
         // Выключаем светодиод
         digitalWrite(led_submit, LOW);
-    } else {
-//        Serial.println("Карта2 - Доступ запрещен!");
+    }
+    else {
+        // Вывод статуса в столбец Status
         Serial.print(false);
         Serial.println();
         // Включаем мигающий красный светодиодный индикатор
